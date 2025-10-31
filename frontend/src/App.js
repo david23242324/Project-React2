@@ -1,12 +1,17 @@
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route, BrowserRouter } from "react-router-dom";
 import UserList from './UserList';
+import Login from './Login';
 
 function App() {
 return (
 <div>
-<h1>React + MySQL Example</h1>
-
-<UserList />
+    <BrowserRouter>
+    <Routes>
+        <Route path='./' element={<Login />}/>
+        <Route path='./lista' element={<UserList />}/>
+    </Routes>
+    </BrowserRouter>
 </div>
 );
 }
