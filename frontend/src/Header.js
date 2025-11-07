@@ -1,5 +1,6 @@
 import React from "react";
 import "./App.css";
+import { Link } from "react-router-dom";
 
 function Header() {
   return (
@@ -11,7 +12,7 @@ function Header() {
       <nav>
         <ul className="nav-menu">
           <li className="nav-item">
-            <button className="nav-toggle">Hombre</button>
+            <Link className="nav-item" to="/agregar">Agregar empleado</Link>
             <ul className="submenu">
               <li>
                 <a href="#">Camisetas</a>

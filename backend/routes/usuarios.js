@@ -17,6 +17,28 @@ router.get("/", (req, res) => {
   });
 });
 
+router.get("/:id", (req, res) => {
+  const { id } = req.params;
+  const query = "SELECT * FROM usuarios WHERE id = ?";
+
+  db.query(query, [id], (err, results) => {
+    if (err) {
+      console.error("Error al obtener usuario:", err);
+      return res.status(500).json({
+        error: "Error al obtener usuario",
+        details: err.message,
+      });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ mensaje: "Usuario no encontrado" });
+    }
+
+    res.status(200).json(results[0]);
+  });
+});
+
+
 router.post("/login", (req, res) => {
   const { email, password } = req.body;
   const query = "SELECT * FROM usuarios WHERE email = ? AND password = ?;";
@@ -35,7 +57,7 @@ router.post("/login", (req, res) => {
     }
 
     // Login correcto
-    res.status(200).json({ mensaje: "Login exitoso", usuario: results[0] });
+    res.status(202).json({ mensaje: "Login exitoso", usuario: results[0] });
   });
 });
 
@@ -61,8 +83,9 @@ router.post("/", (req, res) => {
   });
 });
 
-router.put("/", (req, res) => {
-  const { id, nombre, email, telefono, fecha_registro } = req.body;
+router.put("/:id", (req, res) => {
+  const { nombre, email, telefono, fecha_registro } = req.body;
+  const { id } = req.params;
 
   const query =
     "UPDATE usuarios SET nombre = ?, email = ?, telefono = ?, fecha_registro = ? WHERE id = ?;";
@@ -85,13 +108,11 @@ router.put("/", (req, res) => {
   });
 });
 
-router.delete("/", (req, res) => {
-  const { id } = req.body;
+router.delete("/:id", (req, res) => {
+  const { id } = req.params;
 
   const query = "DELETE FROM usuarios WHERE id=?";
-  const valor = [id];
-
-  db.query(query, valor, (err, results) => {
+  db.query(query, [id], (err, results) => {
     if (err) {
       console.error("Error al eliminar usuario:", err);
       return res.status(500).json({
@@ -104,8 +125,9 @@ router.delete("/", (req, res) => {
       return res.status(404).json({ error: "Usuario no encontrado" });
     }
 
-    res.status(201).json(results);
+    res.status(200).json({ message: "Usuario eliminado exitosamente" });
   });
 });
+
 
 module.exports = router;

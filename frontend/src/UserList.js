@@ -2,14 +2,15 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./App.css";
 import Header from "./Header";
+import { useNavigate } from "react-router-dom";
 
 function UserList() {
   const [users, setUsers] = useState([]);
   const [nombre, setNombre] = useState("");
   const [email, setEmail] = useState("");
-  const [editId, setEditId] = useState(null);
+  const navigate = useNavigate();
 
-  const URL = "http://localhost:5001/api"; 
+  const URL = "http://localhost:5001/api";
 
   const getUsers = async () => {
     try {
@@ -29,7 +30,12 @@ function UserList() {
     if (!nombre || !email) return alert("Completa todos los campos");
 
     try {
-      await axios.post(URL, { nombre, email, password: "1234" });
+      await axios.post(URL, {
+        nombre,
+        email,
+        telefono: "0000000000",
+        password: "1234"
+      });
       getUsers();
       setNombre("");
       setEmail("");
@@ -37,27 +43,6 @@ function UserList() {
       console.error("Error al crear usuario:", err);
     }
   };
-
-  const handleEdit = (user) => {
-    setEditId(user.id);
-    setNombre(user.nombre);
-    setEmail(user.email);
-  };
-
-
-  const handleUpdate = async (e) => {
-    e.preventDefault();
-    try {
-      await axios.put(`${URL}/${editId}`, { nombre, email });
-      getUsers();
-      setEditId(null);
-      setNombre("");
-      setEmail("");
-    } catch (err) {
-      console.error("Error al actualizar usuario:", err);
-    }
-  };
-
 
   const handleDelete = async (id) => {
     if (window.confirm("¿Seguro que deseas eliminar este usuario?")) {
@@ -70,35 +55,16 @@ function UserList() {
     }
   };
 
+  const handleEdit = (user) => {
+    navigate(`/editar/${user.id}`);
+  };
+
   return (
     <div className="page-wrapper">
       <Header />
 
       <div className="userlist-container">
         <h2 className="userlist-title">Gestión de Usuarios</h2>
-
-        <form onSubmit={editId ? handleUpdate : handleCreate} className="form">
-          <input
-            type="text"
-            placeholder="Nombre"
-            value={nombre}
-            onChange={(e) => setNombre(e.target.value)}
-          />
-          <input
-            type="email"
-            placeholder="Correo"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <button type="submit">
-            {editId ? "Actualizar" : "Crear"}
-          </button>
-          {editId && (
-            <button type="button" onClick={() => setEditId(null)}>
-              Cancelar
-            </button>
-          )}
-        </form>
 
         <table className="userlist-table">
           <thead>

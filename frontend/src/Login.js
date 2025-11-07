@@ -20,7 +20,7 @@ function Login() {
         password,
       });
 
-      if (res.status === 200 && res.data.usuario) {
+      if (res.status === 202 && res.data.usuario) {
         navigate("/usuarios");
       } else {
         setError("Credenciales incorrectas");
@@ -29,7 +29,7 @@ function Login() {
       if (err.response?.status === 401) {
         setError("Credenciales incorrectas (401)");
       } else if (err.response?.status === 404) {
-        setError("Usuario no encontrado (404)");
+        navigate("/error");
       } else if (err.response?.status === 500) {
         setError("Error del servidor (500)");
       } else {
