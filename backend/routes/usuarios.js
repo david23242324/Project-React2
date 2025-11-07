@@ -3,7 +3,7 @@ const router = express.Router();
 const db = require("../config/database");
 
 router.get("/", (req, res) => {
-  const query = "SELECT * FROM usuarios ORDER BY id DESC";
+  const query = "SELECT * FROM usuarios ORDER BY id ASC";
 
   db.query(query, (err, results) => {
     if (err) {
@@ -17,20 +17,28 @@ router.get("/", (req, res) => {
   });
 });
 
-router.get("/login", (req, res) => {
-  const query = "SELECT * FROM usuarios where email = ? and password = ?;";
+router.post("/login", (req, res) => {
   const { email, password } = req.body;
-  db.query(query, (err, [email, password], results) => {
+  const query = "SELECT * FROM usuarios WHERE email = ? AND password = ?;";
+
+  db.query(query, [email, password], (err, results) => {
     if (err) {
-      console.error("Error al obtener usuarios:", err);
+      console.error("Error al buscar usuario:", err);
       return res.status(500).json({
-        error: "Error al obtener usuarios",
+        error: "Error al obtener usuario",
         details: err.message,
       });
     }
-    res.status(200).json(results);
+
+    if (results.length === 0) {
+      return res.status(404).json({ mensaje: "Usuario no encontrado" });
+    }
+
+    // Login correcto
+    res.status(200).json({ mensaje: "Login exitoso", usuario: results[0] });
   });
 });
+
 
 router.post("/", (req, res) => {
   const { nombre, email, telefono } = req.body;

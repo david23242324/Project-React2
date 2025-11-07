@@ -1,19 +1,27 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, BrowserRouter } from "react-router-dom";
-import UserList from './UserList';
-import Login from './Login';
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import UserList from "./UserList";
+import Login from "./Login";
 
 function App() {
-return (
-<div>
-    <BrowserRouter>
-    <Routes>
-        <Route path='./' element={<Login />}/>
-        <Route path='./lista' element={<UserList />}/>
-    </Routes>
-    </BrowserRouter>
-</div>
-);
+  return (
+    <Router>
+      <div className="container mt-5">
+        <Routes>
+          <Route path="/" element={<Navigate to="/login" />} />
+
+          <Route path="/login" element={<Login />} />
+
+          <Route path="/usuarios" element={<UserList />} />
+        </Routes>
+      </div>
+    </Router>
+  );
 }
 
 export default App;
